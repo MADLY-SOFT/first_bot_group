@@ -1,41 +1,23 @@
-import logging
+import asyncio
 from aiogram import Bot, Dispatcher, types
-from aiogram.utils import executor
+from aiogram.filters import CommandStart
 
-# Настройка логирования
-logging.basicConfig(level=logging.INFO)
+BOT_TOKEN = 'YOUR_BOT_TOKEN'
 
-# Замените 'YOUR_BOT_TOKEN' на токен, который вы получили от BotFather
-API_TOKEN = 'YOUR_BOT_TOKEN'
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
 
-# Инициализация бота и диспетчера
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+@dp.message(CommandStart())
+async def handle_start(message: types.Message):
+    await message.reply("Привет! Я твой простой бот. Отправь мне команду /text.")
 
-# Обработчик команды /start
-@dp.message_handler(commands=['start'])
-async def send_welcome(message: types.Message):
-    """
-    Этот обработчик будет вызываться при получении команды /start.
-    """
-    await message.reply("Привет! Я твой простой Telegram бот. Отправь мне любое сообщение, и я его повторю.")
+@dp.message()
+async def handle_text_command(message: types.Message):
+    response_text = "Это ответ на команду /text. Ты можешь изменить этот текст."
+    await message.reply(response_text)
 
-# Обработчик команды /text
-@dp.message_handler(commands=['text'])
-async def echo_text_command(message: types.Message):
-    """
-    Этот обработчик будет вызываться при получении команды /text.
-    """
-    await message.reply("Ты отправил команду /text. Теперь отправь мне любое сообщение, и я его повторю.")
-
-# Обработчик для всех остальных текстовых сообщений (эхо)
-@dp.message_handler(content_types=types.ContentType.TEXT)
-async def echo_all(message: types.Message):
-    """
-    Этот обработчик будет повторять все текстовые сообщения, которые не являются командами.
-    """
-    await message.reply(message.text)
+async def main():
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    # Запуск бота
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
