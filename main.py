@@ -2,9 +2,9 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
 
-TOKEN = 'BOT_TOKEN'
+API_TOKEN = 'API_BOT'
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
 @dp.message(CommandStart())
